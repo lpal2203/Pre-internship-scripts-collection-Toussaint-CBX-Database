@@ -1,0 +1,31 @@
+awk -F'\t' '
+{
+    # extrait numéro CBX
+    match($1, /CBX([0-9]+)/, arr)
+    num = arr[1] + 0
+
+    species = $10
+    genus = $9
+    percent = $12
+
+    if (species == "" || species == "-" ) {
+        name = genus " sp."
+    } else {
+        name = species
+    }
+
+    output[num] = name " " percent "% (Bold)"
+
+    if (num > max) max = num
+}
+
+END {
+    for (i = 1; i <= max; i++) {
+        if (i in output) {
+            print output[i]
+        } else {
+            print ""
+        }
+    }
+}
+' input.tsv > output.txt
